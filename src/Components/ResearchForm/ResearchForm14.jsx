@@ -1,0 +1,165 @@
+import { React, useContext, useState } from "react";
+import { ChevronDown, Upload, UserStar, UploadCloud, X } from "lucide-react";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { Data } from "../../Context/store.js";
+import fileIcon from "../../assets/file_icon.svg";
+const ResearchForm14 = ({ data, researchPoints }) => {
+  // auth
+ const API = import.meta.env.VITE_API
+  const token = localStorage.getItem("appraisal_token");
+  const decoded = jwtDecode(token);
+  const designation = decoded.designation;
+  const username = decoded.facultyName;
+  const [mark, setMark] = useState(data?.seedFund?.marks);
+  const { researchMarks } = useContext(Data);
+
+  // states
+  const [selectedCheck, setSelectedCheck] = useState(data?.seedFund?.value);
+  const [files, setFiles] = useState(data?.seedFund?.seedFundFiles);
+  const name = data.employee.fullName;
+  const employeeId = data.employee._id;
+  const userDesignation = data.employee.designation;
+  // function for handling radio button click and api call while the button is clicked
+  const handleCheckbox = async (value) => {
+    setSelectedCheck(value);
+    const formData = new FormData();
+    formData.append("seedFund", value);
+    formData.append("facultyName", name);
+    formData.append("designation", userDesignation);
+    formData.append("employeeId", employeeId);
+    formData.append("files", files);
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API}/api/SeedFund/${designation}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("res seedfund index : ", response);
+      setMark(response.data.finalMarks);
+    } catch (err) {
+      console.error("err : ", err.message);
+    }
+  };
+
+  // async function handleFilePreview(fileName) {
+  //   try {
+  //     const response = await axios.get(
+  //       `${import.meta.env.VITE_API}/api/file/${fileName}`,
+  //       {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //         responseType: "blob", // 👈 file comes as binary blob
+  //       }
+  //     );
+
+  //     // create a blob URL
+  //     const fileURL = URL.createObjectURL(response.data);
+
+  //     // open in new tab
+  //     window.open(fileURL, "_blank");
+  //   } catch (err) {
+  //     console.error("error:", err.message);
+  //   }
+  // }
+  const handleFilePreview = (files) => {
+    window.open(files[0], "_blank");
+  };
+  return (
+    <>
+      <div className="input-container-2 border border-[#AAAAAA] p-4  bg-white  rounded-xl grid gap-4 grid-cols-12">
+        <div className="first-container pr-3 border-r border-gray-400 col-span-10">
+          {/* .heading / question  */}
+          <div>
+            <h1 className="text-lg font-medium">
+              Seed fund Activities <span className="text-red-500">*</span>
+            </h1>
+          </div>
+          {/* input container  */}
+          <div className="checkbox-container mt-2 px-6 space-y-2">
+            <div className="container-1 flex items-center gap-2">
+              <input
+                type="radio"
+                className="scale-125 cursor-pointer accent-teal-500"
+                checked={selectedCheck == "upto one lakh" ? true : false}
+                onChange={() => {
+                  handleCheckbox("upto one lakh");
+                }}
+              />
+              <label className="text-[#6f7282]">Upto Rs. 1 Lakh</label>
+            </div>
+            <div className="container-1 flex items-center gap-2">
+              <input
+                type="radio"
+                className="scale-125 cursor-pointer accent-teal-500"
+                checked={
+                  selectedCheck == "greater than two lakh" ? true : false
+                }
+                onChange={() => {
+                  handleCheckbox("greater than two lakh");
+                }}
+              />
+              <label className="text-[#6f7282]">More than Rs. 2 Lakhs</label>
+            </div>
+            <div className="container-1 flex items-center gap-2">
+              <input
+                type="radio"
+                className="scale-125 cursor-pointer accent-teal-500"
+                checked={
+                  selectedCheck == "Research Publications" ? true : false
+                }
+                onChange={() => {
+                  handleCheckbox("Research Publications");
+                }}
+              />
+              <label className="text-[#6f7282]">Research Publications</label>
+            </div>
+            <div className="container-1 flex items-center gap-2">
+              <input
+                type="radio"
+                className="scale-125 cursor-pointer accent-teal-500"
+                checked={selectedCheck == "" ? true : false}
+                onChange={() => {
+                  handleCheckbox("");
+                }}
+              />
+              <label className="text-[#6f7282]">None</label>
+            </div>
+          </div>
+          <div className="file-container mt-4 space-y-2">
+            {files.map((item, index) => {
+              const normalizedPath = item.replace(/\\/g, "/");
+              const fileName = normalizedPath.split("/").pop();
+              return (
+                <div
+                  key={index}
+                  onClick={() => handleFilePreview(files)}
+                  className="file-card w-fit p-2 file-icon-container border border-gray-300 rounded-lg flex cursor-pointer gap-2 hover:bg-gray-100"
+                >
+                  <img src={fileIcon} className="w-6 h-6" alt="file icon" />
+                  <h1 className="text-gray-800">{fileName.slice(0, 15)}</h1>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        {/* marks container  */}
+        <div className="second-container col-span-2 text-center">
+          <h1 className="text-lg font-medium">Marks</h1>
+          <div className="h-[80%] flex items-center justify-center">
+            <h1 className="text-[#646464]  text-lg">
+              <span className="font-semibold text-[#318179]">{mark || 0}</span>{" "}
+              out of {researchPoints?.seedfund}
+            </h1>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default ResearchForm14;
