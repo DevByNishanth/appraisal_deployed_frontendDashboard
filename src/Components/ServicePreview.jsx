@@ -6,7 +6,7 @@ import { Data } from "../Context/store.js";
 import { useNavigate } from "react-router-dom";
 
 export default function ServicePreview({ data, setShowPreview, form_id }) {
- const API = import.meta.env.VITE_API
+  const API = import.meta.env.VITE_API;
   const token = localStorage.getItem("appraisal_token");
   const decoded = jwtDecode(token);
 
@@ -39,9 +39,9 @@ export default function ServicePreview({ data, setShowPreview, form_id }) {
     console.log("handle approval running ");
     const role = designation?.toLowerCase();
     console.log("role : ", role);
-    if (role.toLowerCase() === "hod") {
+    if (role.includes("hod")) {
       approveByHOD(form_id);
-    } else if (role === "dean") {
+    } else if (role.includes("dean")) {
       approveByDean(form_id);
     }
   };
@@ -53,7 +53,7 @@ export default function ServicePreview({ data, setShowPreview, form_id }) {
       const response = await axios.put(
         `${import.meta.env.VITE_API}/api/approvehod/${form_id}`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       console.log("HOD approval success:", response.data);
       navigate(`/appraisal_form/form/${form_id}/completed`);
@@ -70,7 +70,7 @@ export default function ServicePreview({ data, setShowPreview, form_id }) {
       const response = await axios.put(
         `${import.meta.env.VITE_API}/api/serviceDean/${form_id}`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       console.log("Dean approval success:", response.data);
       navigate(`/appraisal_form/form/${form_id}/completed`);
@@ -105,11 +105,11 @@ export default function ServicePreview({ data, setShowPreview, form_id }) {
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem(
-                "appraisal_token"
+                "appraisal_token",
               )}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
         setPreviewmark(response.data);
       } catch (error) {

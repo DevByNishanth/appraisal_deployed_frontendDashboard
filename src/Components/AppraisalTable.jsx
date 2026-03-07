@@ -29,11 +29,11 @@ const AppraisalTable = () => {
     }
   }
 
-  console.log("changes made")
+  console.log("changes made");
   const role = decoded.designation;
   const mail = decoded.email;
-  
-  console.log("Testing github repo")
+
+  console.log("Testing github repo");
   const navigate = useNavigate();
 
   const { searchQueryTable, filteredTableData, setSearchQueryTable } =
@@ -79,22 +79,18 @@ const AppraisalTable = () => {
     return deptMatch && designationMatch && searchMatch;
   });
 
+  console.log("filteredEmployees : ", filteredEmployees)
+
   // Navigate logic
   function handleNavigation(form_id) {
-
+    console.log("role : ", role);
     if (!form_id) return;
 
-    if (mail === "deanacademics@sece.ac.in" || role?.toLowerCase() === "hod") {
+    if (mail === "deanacademics@sece.ac.in" || role?.includes("hod")) {
       navigate(`/appraisal_form/form/${form_id}`);
-    } else if (
-      mail === "deaniqac@sece.ac.in" ||
-      role?.toLowerCase() === "hod"
-    ) {
+    } else if (mail === "deaniqac@sece.ac.in" || role?.includes("hod")) {
       navigate(`/appraisal_form/form/${form_id}/service_form`);
-    } else if (
-      mail === "deanresearch@sece.ac.in" ||
-      role?.toLowerCase() === "hod"
-    ) {
+    } else if (mail === "deanresearch@sece.ac.in" || role?.includes("hod")) {
       navigate(`/appraisal_form/form/${form_id}/research_form`);
     }
   }

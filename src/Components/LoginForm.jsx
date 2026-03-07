@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 function LoginForm({ setIsLoggedIn, setUserData }) {
-  const API = import.meta.env.VITE_API
+  const API = import.meta.env.VITE_API;
   const [isLoading, setIsLoading] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -19,24 +19,27 @@ function LoginForm({ setIsLoggedIn, setUserData }) {
   const handleLogin = async () => {
     const newErrors = { email: "", password: "" };
     let hasError = false;
-  
+
     const emailLower = email.toLowerCase().trim();
-  
+
     // Email validation
     if (!emailLower) {
       newErrors.email = "Email is required.";
       hasError = true;
-    } 
-    else if (
+    } else if (
       !(
         emailLower.endsWith("@sece.ac.in") &&
-        (emailLower.startsWith("hod") || emailLower.startsWith("dean") || emailLower.startsWith("hr"))
+        (emailLower.startsWith("hod") ||
+          emailLower.toLowerCase() == "siamaladevi.s@sece.ac.in" ||
+          emailLower.toLowerCase() == "rajanbabu.w@sece.ac.in" ||
+          emailLower.startsWith("dean") ||
+          emailLower.startsWith("hr"))
       )
     ) {
       newErrors.email = "Only HOD, Dean, or HR accounts can log in.";
       hasError = true;
     }
-  
+
     // Password validation
     if (!password.trim()) {
       newErrors.password = "Password is required.";
@@ -45,34 +48,34 @@ function LoginForm({ setIsLoggedIn, setUserData }) {
       newErrors.password = "Password must be at least 5 characters.";
       hasError = true;
     }
-  
+
     if (hasError) {
       setErrors(newErrors);
       return;
     }
-  
+
     setErrors({});
     setIsLoading(true);
-  
+
     try {
       const { data, status } = await axios.post(
         `${import.meta.env.VITE_API}/api/employee-login`,
-        { email, password }
+        { email, password },
       );
-  
+
       if (status === 200) {
         const token = data.token;
-  
+
         localStorage.setItem("appraisal_token", token);
         localStorage.setItem("appraisal_loggedIn", "true");
-  
+
         if (setUserData) setUserData(data.employee);
-  
+
         setIsLoggedIn(true);
-  
+
         const decoded = jwtDecode(token);
         console.log("Decoded Token:", decoded);
-  
+
         if (decoded.designation?.toLowerCase() === "hr") {
           navigate("/hr_dashboard");
         } else {
@@ -81,10 +84,10 @@ function LoginForm({ setIsLoggedIn, setUserData }) {
       }
     } catch (err) {
       console.error(err);
-  
+
       const message =
         err.response?.data?.message || "Login failed. Please try again.";
-  
+
       setErrors({ email: "", password: message });
     } finally {
       setIsLoading(false);

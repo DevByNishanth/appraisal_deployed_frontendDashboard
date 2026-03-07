@@ -23,7 +23,7 @@ const ThanksPage = () => {
   const decoded = jwtDecode(token);
   const designation = decoded.designation;
   const mail = decoded.email;
-  const API = import.meta.env.VITE_API
+  const API = import.meta.env.VITE_API;
   const { form_id } = useParams();
 
   // ✅ Fetch joinAnswer
@@ -58,12 +58,12 @@ const ThanksPage = () => {
         },
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       console.log(
         "TeachingRecord Response:-------->",
-        response.data.researchMarks
+        response.data.researchMarks,
       );
 
       setTeachingMarks(response.data.teachingMarks || 0);
@@ -73,7 +73,7 @@ const ThanksPage = () => {
     } catch (error) {
       console.error(
         "Error fetching points:",
-        error.response?.data || error.message
+        error.response?.data || error.message,
       );
     }
   };
@@ -138,7 +138,7 @@ const ThanksPage = () => {
 
               {/* Teaching Performance for HOD */}
               {(mail === "deanacademics@sece.ac.in" ||
-                designation.trim().toLowerCase() === "hod") && (
+                designation.trim().includes("hod")) && (
                 <tr className="bg-gray-50 border-b border-gray-300">
                   <td className="py-2 pl-2">Teaching Performance</td>
                   <td>{teachingMarks}</td>
@@ -147,7 +147,7 @@ const ThanksPage = () => {
 
               {/* Research only for Dean */}
               {(mail === "deanresearch@sece.ac.in" ||
-                designation.trim().toLowerCase() === "hod") && (
+                designation.trim().includes("hod")) && (
                 <tr className="bg-gray-50 border-b border-gray-300">
                   <td className="py-2 pl-2">Research</td>
                   <td>{researchMarks}</td>
@@ -156,14 +156,14 @@ const ThanksPage = () => {
 
               {/* Service for HOD or IQAC Dean */}
               {(mail === "deaniqac@sece.ac.in" ||
-                designation.trim().toLowerCase() === "hod") && (
+                designation.trim().includes("hod")) && (
                 <tr className="bg-gray-50 border-b border-gray-300">
                   <td className="py-2 pl-2">Service</td>
                   <td>{serviceMarks}</td>
                 </tr>
               )}
 
-              {designation.toLowerCase() == "hod" && (
+              {designation.includes("hod") && (
                 <tr className="bg-gray-200 font-semibold">
                   <td className="py-2 pl-2">Total</td>
                   <td>{totalMarks}</td>

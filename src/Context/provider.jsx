@@ -26,7 +26,7 @@ export const DataProvider = ({ children }) => {
    const [showServicePreview, setSerivePreview] = useState(false);
   const token = localStorage.getItem("appraisal_token");
 
-  console.log("table data  ==> : ", tableData);
+  // console.log("table data  ==> : ", tableData);
 
   // Fetch employees
   const fetchData = async () => {
@@ -40,6 +40,7 @@ export const DataProvider = ({ children }) => {
       // console.log("table data : ", response.data);
       setTableData(response.data);
       setFilteredTableData(response.data);
+      console.log("table data : ", response.data)
     } catch (error) {
       console.error("Error fetching employees:", error);
     }

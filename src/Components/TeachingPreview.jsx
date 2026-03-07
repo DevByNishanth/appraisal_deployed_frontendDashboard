@@ -79,9 +79,9 @@ export default function TeachingPreview({ data, setShowTeachingPreview }) {
     console.log("handle approval running ");
     const role = designation?.toLowerCase();
     console.log("role : ", role);
-    if (role.toLowerCase() === "hod") {
+    if (role.includes("hod")) {
       approveByHOD(form_id);
-    } else if (role === "dean") {
+    } else if (role.includes("dean")) {
       approveByDean(form_id);
     }
   };
