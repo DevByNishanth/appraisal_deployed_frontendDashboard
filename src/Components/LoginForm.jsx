@@ -32,6 +32,7 @@ function LoginForm({ setIsLoggedIn, setUserData }) {
         (emailLower.startsWith("hod") ||
           emailLower.toLowerCase() == "siamaladevi.s@sece.ac.in" ||
           emailLower.toLowerCase() == "rajanbabu.w@sece.ac.in" ||
+          emailLower.toLowerCase() == "mohammedmustafa.m@sece.ac.in" ||
           emailLower.startsWith("dean") ||
           emailLower.startsWith("hr"))
       )
